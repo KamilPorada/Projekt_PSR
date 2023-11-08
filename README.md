@@ -5,15 +5,15 @@ Implementacja rozproszonego narzędzia do obliczania wartości całek oznaczonyc
 
 Opis projektu:
 Narzędzie będzie miało za zadanie obliczać wartości całek oznaczonych w zależności od zadanych parametrów:
-*poziomu złożoności obliczeniowej,
-*liczby podziałów (dotyczy metod iteracyjnych), długości tablicy całkowej (dotyczy metod rekurencyjnych),
+poziomu złożoności obliczeniowej,
+liczby podziałów (dotyczy metod iteracyjnych), długości tablicy całkowej (dotyczy metod rekurencyjnych),
 przedziału całkowania.
 
 Zostaną zaprezentowanie następujące algorytmy całkowania numerycznego:
-*metoda prostokątów,
-*metoda trapezów,
-*metoda parabol (Simpsona),
-*metoda Romberga.
+metoda prostokątów,
+metoda trapezów,
+metoda parabol (Simpsona),
+metoda Romberga.
 
 Główny zarządca będzie odbierał dane od użytkownika dotyczące wyżej wymienionych parametrów,
 a następnie będzie je wysyłał do klientów. Klienci będą dokonywać niezbędnych obliczeń numerycznych 
