@@ -6,6 +6,10 @@ import java.net.Socket;
 import java.util.function.Function;
 
 public class IntegrationServer {
+    public static double function(double x) {
+        return (5*Math.pow(x,6)-2*Math.cos(x));
+    }
+
     public static void main(String[] args) {
         try {
             ServerSocket serverSocket = new ServerSocket(1245);
@@ -30,16 +34,46 @@ public class IntegrationServer {
                 double result = 0;
 
                 // Calculate result based on the chosen method
-                long millisActualTime = System.nanoTime();
+                long nanoActualTime = System.nanoTime();
                 switch (methodChoice) {
                     case 1:
-                        result = NumericalIntegration.rectangleMethod(a, b, n, function);
+                        double h = (b - a) / n;
+                        double sum = 0.0;
+
+                        for (int i = 0; i < n; i++) {
+                            double x = a + i * h;
+                            sum += function(x);
+                            outToClient.writeInt(i);
+                        }
+                        result = sum * h;
                         break;
                     case 2:
-                        result = NumericalIntegration.trapezeMethod(a, b, n, function);
+                        h = (b - a) / n;
+                        sum = 0.5 * (function(a) + function(b));
+
+                        for (int i = 0; i < n; i++) {
+                            double x = a + i * h;
+                            sum += function(x);
+                            outToClient.writeInt(i);
+                        }
+                        result = sum * h;
                         break;
                     case 3:
-                        result = NumericalIntegration.simsponMethod(a, b, n, function);
+                        h = (b - a) / n;
+                        sum = function(a) + function(b);
+
+                        for (int i = 1; i < n; i++) {
+                            double x = a + i * h;
+                            sum += 2 * function(x);
+                            outToClient.writeInt(i);
+                        }
+
+                        for (int i = 1; i <= n; i++) {
+                            double x = a + i * h;
+                            sum += 4 * function(x - h / 2);
+                            outToClient.writeInt(n+i);
+                        }
+                        result = (h / 6) * sum;
                         break;
                     default:
                         System.out.println("Niepoprawny wybór metody.");
@@ -49,7 +83,7 @@ public class IntegrationServer {
 
                 // Send the result back to the client
                 outToClient.writeDouble(result);
-                long executionTime = System.nanoTime() - millisActualTime;
+                long executionTime = System.nanoTime() - nanoActualTime;
                 outToClient.writeLong(executionTime);
                 outToClient.flush();
 
