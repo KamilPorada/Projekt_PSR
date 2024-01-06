@@ -6,13 +6,12 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.function.Function;
 
-public class IntegrationServer {
+public class IterativeIntegrationServer {
 
     public static void main(String[] args) {
         try {
-            ServerSocket serverSocket = new ServerSocket(1245);
+            ServerSocket serverSocket = new ServerSocket(1000);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
