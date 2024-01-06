@@ -215,9 +215,6 @@ public class IntegrationClientGUI extends JFrame {
             outToServer.writeInt(option);
             outToServer.flush();
 
-            outToServer.writeObject("1");
-            outToServer.flush();
-
             outToServer.writeDouble(a);
             outToServer.writeDouble(b);
             outToServer.writeInt(n);
@@ -226,57 +223,57 @@ public class IntegrationClientGUI extends JFrame {
             outToServer.writeObject(mathFunction);
             outToServer.flush();
 
-//            SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
-//                @Override
-//                protected Void doInBackground() throws Exception {
-//                    if(option!=3){
-//                        for (int i = 0; i < n; i++) {
-//                            progress = inFromServer.readInt();
-//                            int percentage = (int) (((double) (progress + 1) / n) * 100);
-//                            publish(percentage);
-//                        }
-//                    }
-//                    else{
-//                        int x = n*2;
-//                        for (int i = 1; i < x; i++) {
-//                            progress = inFromServer.readInt();
-//                            int percentage = (int) (((double) (progress + 1) / x) * 100);
-//                            publish(percentage);
-//                        }
-//                    }
-//
-//                    return null;
-//                }
-//
-//                @Override
-//                protected void process(java.util.List<Integer> chunks) {
-//                    for (int percentage : chunks) {
-//                        progressBar.setValue(percentage);
-//                        progressLabel.setText("<html><body style='text-align: center'>" + percentage + "%");
-//                    }
-//                }
-//
-//                @Override
-//                protected void done() {
-//                    try {
-//                        double result = inFromServer.readDouble();
-//                        long elapsedTimeInNanoseconds = inFromServer.readLong();
-//                        double roundedResult = Math.round(result * 10000.0) / 10000.0;
-//                        resultLabel.setText("Wynik działania: " + roundedResult);
-//                        timeLabel.setText("Czas całkowania: " + formatElapsedTimeInSeconds(elapsedTimeInNanoseconds));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    } finally {
-//                        try {
-//                            socket.close();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            };
+            SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    if(option!=3){
+                        for (int i = 0; i < n; i++) {
+                            progress = inFromServer.readInt();
+                            int percentage = (int) (((double) (progress + 1) / n) * 100);
+                            publish(percentage);
+                        }
+                    }
+                    else{
+                        int x = n*2;
+                        for (int i = 1; i < x; i++) {
+                            progress = inFromServer.readInt();
+                            int percentage = (int) (((double) (progress + 1) / x) * 100);
+                            publish(percentage);
+                        }
+                    }
 
-//            worker.execute();
+                    return null;
+                }
+
+                @Override
+                protected void process(java.util.List<Integer> chunks) {
+                    for (int percentage : chunks) {
+                        progressBar.setValue(percentage);
+                        progressLabel.setText("<html><body style='text-align: center'>" + percentage + "%");
+                    }
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        double result = inFromServer.readDouble();
+                        long elapsedTimeInNanoseconds = inFromServer.readLong();
+                        double roundedResult = Math.round(result * 10000.0) / 10000.0;
+                        resultLabel.setText("Wynik działania: " + roundedResult);
+                        timeLabel.setText("Czas całkowania: " + formatElapsedTimeInSeconds(elapsedTimeInNanoseconds));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            socket.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+
+            worker.execute();
 
         } catch (IOException | NumberFormatException ex) {
             ex.printStackTrace();
