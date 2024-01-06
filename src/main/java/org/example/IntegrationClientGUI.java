@@ -1,5 +1,8 @@
 package org.example;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -23,6 +26,8 @@ public class IntegrationClientGUI extends JFrame {
 
     private int progress = 0;
 
+    private String stringFunction, mathFunction;
+
     public IntegrationClientGUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Toolkit kit = Toolkit.getDefaultToolkit();
@@ -45,7 +50,7 @@ public class IntegrationClientGUI extends JFrame {
         titleEquationLabel.setBounds(0, 30, windowWidth, 20);
         panel.add(titleEquationLabel);
 
-        equationLabel = new JLabel("<html><body style='text-align: center'>f(x)=sin(x)", SwingConstants.CENTER);
+        equationLabel = new JLabel("<html><body style='text-align: center'>f(x)=.................................", SwingConstants.CENTER);
         equationLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         equationLabel.setBounds(0, 50, windowWidth, 20);
         panel.add(equationLabel);
@@ -155,13 +160,6 @@ public class IntegrationClientGUI extends JFrame {
         exitButton.setForeground(Color.white);
         panel.add(exitButton);
 
-
-
-
-
-
-
-
         createFunctionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -197,11 +195,10 @@ public class IntegrationClientGUI extends JFrame {
         FunctionCreationDialog dialog = new FunctionCreationDialog(this);
         dialog.setVisible(true);
 
-        // Pobierz wzór funkcji z okna modalnego
-        String function = dialog.getFunction();
-        if (function != null) {
-            functionTextField.setText(function);
-        }
+        stringFunction = dialog.getStringFunction();
+        mathFunction = dialog.getMathFunction();
+        equationLabel.setText(stringFunction);
+
     }
 
     private void performIntegration() {
@@ -214,7 +211,7 @@ public class IntegrationClientGUI extends JFrame {
             ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
 
-            int option = methodComboBox.getSelectedIndex() + 1; // Index starts from 0
+            int option = methodComboBox.getSelectedIndex() + 1;
             outToServer.writeInt(option);
             outToServer.flush();
 
@@ -226,57 +223,60 @@ public class IntegrationClientGUI extends JFrame {
             outToServer.writeInt(n);
             outToServer.flush();
 
-            SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    if(option!=3){
-                        for (int i = 0; i < n; i++) {
-                            progress = inFromServer.readInt();
-                            int percentage = (int) (((double) (progress + 1) / n) * 100);
-                            publish(percentage);
-                        }
-                    }
-                    else{
-                        int x = n*2;
-                        for (int i = 1; i < x; i++) {
-                            progress = inFromServer.readInt();
-                            int percentage = (int) (((double) (progress + 1) / x) * 100);
-                            publish(percentage);
-                        }
-                    }
+            outToServer.writeObject(mathFunction);
+            outToServer.flush();
 
-                    return null;
-                }
+//            SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+//                @Override
+//                protected Void doInBackground() throws Exception {
+//                    if(option!=3){
+//                        for (int i = 0; i < n; i++) {
+//                            progress = inFromServer.readInt();
+//                            int percentage = (int) (((double) (progress + 1) / n) * 100);
+//                            publish(percentage);
+//                        }
+//                    }
+//                    else{
+//                        int x = n*2;
+//                        for (int i = 1; i < x; i++) {
+//                            progress = inFromServer.readInt();
+//                            int percentage = (int) (((double) (progress + 1) / x) * 100);
+//                            publish(percentage);
+//                        }
+//                    }
+//
+//                    return null;
+//                }
+//
+//                @Override
+//                protected void process(java.util.List<Integer> chunks) {
+//                    for (int percentage : chunks) {
+//                        progressBar.setValue(percentage);
+//                        progressLabel.setText("<html><body style='text-align: center'>" + percentage + "%");
+//                    }
+//                }
+//
+//                @Override
+//                protected void done() {
+//                    try {
+//                        double result = inFromServer.readDouble();
+//                        long elapsedTimeInNanoseconds = inFromServer.readLong();
+//                        double roundedResult = Math.round(result * 10000.0) / 10000.0;
+//                        resultLabel.setText("Wynik działania: " + roundedResult);
+//                        timeLabel.setText("Czas całkowania: " + formatElapsedTimeInSeconds(elapsedTimeInNanoseconds));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } finally {
+//                        try {
+//                            socket.close();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            };
 
-                @Override
-                protected void process(java.util.List<Integer> chunks) {
-                    for (int percentage : chunks) {
-                        progressBar.setValue(percentage);
-                        progressLabel.setText("<html><body style='text-align: center'>" + percentage + "%");
-                    }
-                }
-
-                @Override
-                protected void done() {
-                    try {
-                        double result = inFromServer.readDouble();
-                        long elapsedTimeInNanoseconds = inFromServer.readLong();
-                        double roundedResult = Math.round(result * 10000.0) / 10000.0;
-                        resultLabel.setText("Wynik działania: " + roundedResult);
-                        timeLabel.setText("Czas całkowania: " + formatElapsedTimeInSeconds(elapsedTimeInNanoseconds));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            };
-
-            worker.execute();
+//            worker.execute();
 
         } catch (IOException | NumberFormatException ex) {
             ex.printStackTrace();
@@ -303,47 +303,4 @@ public class IntegrationClientGUI extends JFrame {
     }
 }
 
-class FunctionCreationDialog extends JDialog {
-    private JTextField functionTextField;
 
-    public FunctionCreationDialog(JFrame parent) {
-        super(parent, "Stwórz wzór funkcji", true);
-        setSize(400, 200);
-        setLocationRelativeTo(parent);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 2));
-
-        JLabel functionLabel = new JLabel("Wzór funkcji:");
-        functionTextField = new JTextField();
-
-        JButton addButton = new JButton("Dodaj");
-        JButton cancelButton = new JButton("Anuluj");
-
-        panel.add(functionLabel);
-        panel.add(functionTextField);
-        panel.add(addButton);
-        panel.add(cancelButton);
-
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                functionTextField.setText(null);
-                dispose();
-            }
-        });
-
-        add(panel);
-    }
-
-    public String getFunction() {
-        return functionTextField.getText();
-    }
-}
