@@ -6,6 +6,8 @@ import javax.script.ScriptException;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,9 +22,11 @@ import java.net.UnknownHostException;
 public class IntegrationClientGUI extends JFrame {
     private JTextField fromTextField, toTextField, partitionsTextField, functionTextField;
     private JComboBox<String> methodComboBox;
-    private JLabel resultLabel, timeLabel, titleLabel, titleEquationLabel, equationLabel, methodLabel, rangeLabel, fromRangeLabel, toRangeLabel, partitionsLabel, progressLabel;
+    private JLabel resultLabel, timeLabel, titleLabel, titleEquationLabel, equationLabel, methodLabel, rangeLabel, fromRangeLabel, toRangeLabel, partitionsLabel, progressLabel, integrationTableLengthLabel;
     private JButton createFunctionButton, calculateButton, resetButton, exitButton;
     private JProgressBar progressBar;
+
+    private JSlider integrationTableLength;
 
     private int progress = 0;
 
@@ -71,7 +75,7 @@ public class IntegrationClientGUI extends JFrame {
         methodLabel.setBounds(0, 130, windowWidth/2-10, 20);
         panel.add(methodLabel);
 
-        methodComboBox = new JComboBox<>(new String[]{"Metoda prostokątów", "Metoda trapezów", "Metoda parabol"});
+        methodComboBox = new JComboBox<>(new String[]{"Metoda prostokątów (iteracyjna)", "Metoda trapezów (iteracyjna)", "Metoda parabol (iteracyjna)", "Metoda Romberga (rekurencyjna)"});
         methodComboBox.setBounds(windowWidth/2+20,130,windowWidth/2-100,20);
         panel.add(methodComboBox);
 
@@ -103,9 +107,20 @@ public class IntegrationClientGUI extends JFrame {
         partitionsLabel.setBounds(0, 260, windowWidth/2+30, 20);
         panel.add(partitionsLabel);
 
+        integrationTableLengthLabel= new JLabel("<html><body style='text-align: right'>1", SwingConstants.RIGHT);
+        integrationTableLengthLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        integrationTableLengthLabel.setBounds(390, 260, 20, 20);
+        integrationTableLengthLabel.setVisible(false);
+        panel.add(integrationTableLengthLabel);
+
         partitionsTextField = new JTextField();
         partitionsTextField.setBounds(windowWidth/2+80,260,100,20);
         panel.add(partitionsTextField);
+
+        integrationTableLength = new JSlider(1,17,1);
+        integrationTableLength.setBounds(windowWidth/2+80,260,100,20);
+        integrationTableLength.setVisible(false);
+        panel.add(integrationTableLength);
 
         calculateButton = new JButton("Oblicz");
         calculateButton.setFont(new Font("Arial", Font.BOLD, 16));
@@ -188,7 +203,35 @@ public class IntegrationClientGUI extends JFrame {
             }
         });
 
+        methodComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(methodComboBox.getSelectedIndex() == 3){
+                    partitionsLabel.setText("<html><body style='text-align: right'>Długość tablicy całkowej:");
+                    partitionsTextField.setVisible(false);
+                    integrationTableLength.setVisible(true);
+                    integrationTableLengthLabel.setVisible(true);
+                }
+                else{
+                    partitionsLabel.setText("<html><body style='text-align: right'>Liczba podziałów:");
+                    partitionsTextField.setVisible(true);
+                    integrationTableLength.setVisible(false);
+                    integrationTableLengthLabel.setVisible(false);
+                }
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+
+        integrationTableLength.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                integrationTableLengthLabel.setText(String.valueOf(integrationTableLength.getValue()));
+            }
+        });
+
         add(panel);
+
     }
 
     private void createFunction() {
@@ -203,21 +246,35 @@ public class IntegrationClientGUI extends JFrame {
 
     private void performIntegration() {
         try {
+            Socket socket;
             double a = Double.parseDouble(fromTextField.getText());
             double b = Double.parseDouble(toTextField.getText());
-            int n = Integer.parseInt(partitionsTextField.getText());
+            int option = methodComboBox.getSelectedIndex() + 1;
+            int n = option == 4 ? integrationTableLength.getValue() : Integer.parseInt(partitionsTextField.getText());
 
-            Socket socket = new Socket("localhost", 1245);
+            if(option == 4){
+                socket = new Socket("localhost", 1000);
+            }
+            else{
+                socket = new Socket("localhost", 3000);
+            }
+
             ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
 
-            int option = methodComboBox.getSelectedIndex() + 1;
+
             outToServer.writeInt(option);
             outToServer.flush();
 
             outToServer.writeDouble(a);
             outToServer.writeDouble(b);
-            outToServer.writeInt(n);
+            if(option == 4){
+                outToServer.writeInt(Math.round(n/2));
+                outToServer.writeInt(n-Math.round(n/2));
+            }
+            else{
+                outToServer.writeInt(n);
+            }
             outToServer.flush();
 
             outToServer.writeObject(mathFunction);
@@ -226,19 +283,32 @@ public class IntegrationClientGUI extends JFrame {
             SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
                 @Override
                 protected Void doInBackground() throws Exception {
-                    if(option!=3){
+                    if(option == 1 || option == 2){
                         for (int i = 0; i < n; i++) {
                             progress = inFromServer.readInt();
                             int percentage = (int) (((double) (progress + 1) / n) * 100);
                             publish(percentage);
                         }
                     }
-                    else{
+                    else if(option == 3){
                         int x = n*2;
                         for (int i = 1; i < x; i++) {
                             progress = inFromServer.readInt();
                             int percentage = (int) (((double) (progress + 1) / x) * 100);
                             publish(percentage);
+                        }
+                    }
+                    else if(option == 4){
+                        int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551, 2489754, 5242194};
+                        int i =0;
+                        String tik = "";
+                        for(;;){
+                            tik = (String) inFromServer.readObject();
+                            if(tik.compareTo("Stop") == 0)
+                                break;
+                            int percentage = (int) (((double) i / counter[n-1]) * 100);
+                            publish(percentage);
+                            i++;
                         }
                     }
 
@@ -257,9 +327,9 @@ public class IntegrationClientGUI extends JFrame {
                 protected void done() {
                     try {
                         double result = inFromServer.readDouble();
+                        String roundedResultAsString = String.format("%.4f", result);
+                        resultLabel.setText("Wynik działania: " + roundedResultAsString);
                         long elapsedTimeInNanoseconds = inFromServer.readLong();
-                        double roundedResult = Math.round(result * 10000.0) / 10000.0;
-                        resultLabel.setText("Wynik działania: " + roundedResult);
                         timeLabel.setText("Czas całkowania: " + formatElapsedTimeInSeconds(elapsedTimeInNanoseconds));
                     } catch (IOException e) {
                         e.printStackTrace();
