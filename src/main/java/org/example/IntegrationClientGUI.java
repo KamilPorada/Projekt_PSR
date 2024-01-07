@@ -117,7 +117,8 @@ public class IntegrationClientGUI extends JFrame {
         partitionsTextField.setBounds(windowWidth/2+80,260,100,20);
         panel.add(partitionsTextField);
 
-        integrationTableLength = new JSlider(1,15,1);
+        integrationTableLength = new JSlider(1,17,1);
+
         integrationTableLength.setBounds(windowWidth/2+80,260,100,20);
         integrationTableLength.setVisible(false);
         panel.add(integrationTableLength);
@@ -253,11 +254,12 @@ public class IntegrationClientGUI extends JFrame {
             int n = option == 4 ? integrationTableLength.getValue() : Integer.parseInt(partitionsTextField.getText());
 
             if(option == 4){
-                socket = new Socket("localhost", 2000);
-            }
-            else{
                 socket = new Socket("localhost", 1000);
             }
+            else{
+                socket = new Socket("localhost", 3000);
+            }
+
 
             ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
@@ -268,7 +270,13 @@ public class IntegrationClientGUI extends JFrame {
 
             outToServer.writeDouble(a);
             outToServer.writeDouble(b);
-            outToServer.writeInt(n);
+            if(option == 4){
+                outToServer.writeInt(Math.round(n/2));
+                outToServer.writeInt(n-Math.round(n/2));
+            }
+            else{
+                outToServer.writeInt(n);
+            }
             outToServer.flush();
 
             outToServer.writeObject(mathFunction);
@@ -293,12 +301,14 @@ public class IntegrationClientGUI extends JFrame {
                         }
                     }
                     else if(option == 4){
-                        int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551};
+                        int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551, 2489754, 5242194};
+                      
                         int i =0;
                         String tik = "";
                         for(;;){
                             tik = (String) inFromServer.readObject();
-                            if(tik == "Stop")
+
+                            if(tik.compareTo("Stop") == 0)
                                 break;
                             int percentage = (int) (((double) i / counter[n-1]) * 100);
                             publish(percentage);

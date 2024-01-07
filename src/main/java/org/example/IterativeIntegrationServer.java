@@ -11,7 +11,8 @@ public class IterativeIntegrationServer {
 
     public static void main(String[] args) {
         try {
-            ServerSocket serverSocket = new ServerSocket(1000);
+
+            ServerSocket serverSocket = new ServerSocket(3000);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
