@@ -1,11 +1,6 @@
 package org.example;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -15,8 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
-
 
 
 public class IntegrationClientGUI extends JFrame {
@@ -75,7 +68,7 @@ public class IntegrationClientGUI extends JFrame {
         methodLabel.setBounds(0, 130, windowWidth/2-10, 20);
         panel.add(methodLabel);
 
-        methodComboBox = new JComboBox<>(new String[]{"Metoda prostokątów (iteracyjna)", "Metoda trapezów (iteracyjna)", "Metoda parabol (iteracyjna)", "Metoda Romberga (rekurencyjna)"});
+        methodComboBox = new JComboBox<>(new String[]{"Metoda prostokątów (iteracyjna)", "Metoda trapezów (iteracyjna)", "Metoda parabol (iteracyjna)", "Metoda Romberga (rekurencyjna)", "Wszystkie"});
         methodComboBox.setBounds(windowWidth/2+20,130,windowWidth/2-100,20);
         panel.add(methodComboBox);
 
@@ -117,7 +110,8 @@ public class IntegrationClientGUI extends JFrame {
         partitionsTextField.setBounds(windowWidth/2+80,260,100,20);
         panel.add(partitionsTextField);
 
-        integrationTableLength = new JSlider(1,17,1);
+        integrationTableLength = new JSlider(1,15,1);
+
         integrationTableLength.setBounds(windowWidth/2+80,260,100,20);
         integrationTableLength.setVisible(false);
         panel.add(integrationTableLength);
@@ -185,7 +179,17 @@ public class IntegrationClientGUI extends JFrame {
         calculateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                performIntegration();
+                if(methodComboBox.getSelectedIndex()==4) {
+                    try {
+                        performAllIntegration(panel);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                else
+                    performIntegration();
             }
         });
 
@@ -259,6 +263,7 @@ public class IntegrationClientGUI extends JFrame {
                 socket = new Socket("localhost", 3000);
             }
 
+
             ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
 
@@ -299,11 +304,13 @@ public class IntegrationClientGUI extends JFrame {
                         }
                     }
                     else if(option == 4){
-                        int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551, 2489754, 5242194};
+                        int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551};
+                      
                         int i =0;
                         String tik = "";
                         for(;;){
                             tik = (String) inFromServer.readObject();
+
                             if(tik.compareTo("Stop") == 0)
                                 break;
                             int percentage = (int) (((double) i / counter[n-1]) * 100);
@@ -311,33 +318,34 @@ public class IntegrationClientGUI extends JFrame {
                             i++;
                         }
                     }
-
                     return null;
                 }
 
                 @Override
                 protected void process(java.util.List<Integer> chunks) {
-                    for (int percentage : chunks) {
-                        progressBar.setValue(percentage);
-                        progressLabel.setText("<html><body style='text-align: center'>" + percentage + "%");
-                    }
+                        for (int percentage : chunks) {
+                            progressBar.setValue(percentage);
+                            progressLabel.setText("<html><body style='text-align: center'>" + percentage + "%");
+                        }
                 }
 
                 @Override
                 protected void done() {
-                    try {
-                        double result = inFromServer.readDouble();
-                        String roundedResultAsString = String.format("%.4f", result);
-                        resultLabel.setText("Wynik działania: " + roundedResultAsString);
-                        long elapsedTimeInNanoseconds = inFromServer.readLong();
-                        timeLabel.setText("Czas całkowania: " + formatElapsedTimeInSeconds(elapsedTimeInNanoseconds));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
+                    if(option!=5) {
                         try {
-                            socket.close();
+                            double result = inFromServer.readDouble();
+                            String roundedResultAsString = String.format("%.4f", result);
+                            resultLabel.setText("Wynik działania: " + roundedResultAsString);
+                            long elapsedTimeInNanoseconds = inFromServer.readLong();
+                            timeLabel.setText("Czas całkowania: " + formatElapsedTimeInSeconds(elapsedTimeInNanoseconds));
                         } catch (IOException e) {
                             e.printStackTrace();
+                        } finally {
+                            try {
+                                socket.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -348,6 +356,100 @@ public class IntegrationClientGUI extends JFrame {
         } catch (IOException | NumberFormatException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void performAllIntegration(JPanel panel) throws IOException, ClassNotFoundException {
+        long startTime = System.nanoTime();
+        Socket socket;
+        double a = Double.parseDouble(fromTextField.getText());
+        double b = Double.parseDouble(toTextField.getText());
+        int option = methodComboBox.getSelectedIndex() + 1;
+        int n = option == 4 ? integrationTableLength.getValue() : Integer.parseInt(partitionsTextField.getText());
+
+        socket = new Socket("localhost", 3000);
+        ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
+
+        outToServer.writeInt(option);
+        outToServer.flush();
+
+        outToServer.writeDouble(a);
+        outToServer.writeDouble(b);
+        outToServer.writeInt(n);
+        outToServer.flush();
+
+        outToServer.writeObject(mathFunction);
+        outToServer.flush();
+
+        String tikr = "";
+        int tik;
+//        int counter = 589551 + 4444433;
+        int counter = 589551 + 444434;
+        int c =0;
+
+        for(;;){
+            tik = inFromServer.readInt();
+            if(tik == -1)
+                break;
+            int percentage = (int) (((double) c / counter) * 100);
+            c++;
+        }
+
+        double[] rectangle = (double[]) inFromServer.readObject();
+        double[] trapeze = (double[]) inFromServer.readObject();
+        double[] parabolas = (double[]) inFromServer.readObject();
+
+        inFromServer.readLong();
+        System.out.println("Metoda prostokątów:");
+        for(int i=0;i<rectangle.length;i++){
+            System.out.print(String.format("%.4f", rectangle[i]));
+            System.out.print("   |");
+        }
+        System.out.println();
+        System.out.println("Metoda trapezów:");
+        for(int i=0;i<trapeze.length;i++){
+            System.out.print(String.format("%.4f", trapeze[i]));
+            System.out.print("   |");
+        }
+        System.out.println();
+        System.out.println("Metoda parabol:");
+        for(int i=0;i<parabolas.length;i++){
+            System.out.print(String.format("%.4f", parabolas[i]));
+            System.out.print("   |");
+        }
+        System.out.println();
+
+        socket = new Socket("localhost", 1000);
+
+        outToServer = new ObjectOutputStream(socket.getOutputStream());
+        inFromServer = new ObjectInputStream(socket.getInputStream());
+
+        outToServer.writeInt(option);
+        outToServer.writeDouble(a);
+        outToServer.writeDouble(b);
+        outToServer.writeInt(10);
+        outToServer.writeInt(5);
+        outToServer.writeObject(mathFunction);
+        outToServer.flush();
+
+
+        for(;;){
+            tikr = (String) inFromServer.readObject();
+            if(tikr.compareTo("Stop") == 0)
+                break;
+            int percentage = (int) (((double) c / counter) * 100);
+            c++;
+        }
+
+        String result = (String) inFromServer.readObject();
+        System.out.println("Metoda Romberga:");
+        System.out.print(result);
+        inFromServer.readLong();
+        long endTime = System.nanoTime();
+
+
+        System.out.print("Czas całkowania: " + formatElapsedTimeInSeconds(endTime-startTime));
+
     }
 
     private void resetFields() {

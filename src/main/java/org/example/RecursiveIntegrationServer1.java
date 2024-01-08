@@ -88,7 +88,10 @@ public class RecursiveIntegrationServer1 {
 
                 nanoEndTime = System.nanoTime();
                 outToClient.writeObject("Stop");
-                outToClient.writeDouble(result[n-1][n-1]);
+                if(methodChoice == 5)
+                    outToClient.writeObject(temp);
+                else
+                    outToClient.writeDouble(result[n-1][n-1]);
                 long executionTime = nanoEndTime - nanoStartTime;
                 outToClient.writeLong(executionTime);
                 outToClient.flush();

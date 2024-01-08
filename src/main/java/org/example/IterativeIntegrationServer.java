@@ -9,8 +9,11 @@ import java.net.Socket;
 
 public class IterativeIntegrationServer {
 
+    static int tik=0;
+
     public static void main(String[] args) {
         try {
+
             ServerSocket serverSocket = new ServerSocket(3000);
 
             while (true) {
@@ -28,6 +31,10 @@ public class IterativeIntegrationServer {
                 String mathFunction = (String) inFromClient.readObject();
 
                 double result = 0;
+
+                double[] rectangle = new double[7];
+                double[] trapeze = new double[7];
+                double[] parabolas = new double[7];
 
                 long nanoActualTime = System.nanoTime();
                 switch (methodChoice) {
@@ -70,12 +77,70 @@ public class IterativeIntegrationServer {
                         }
                         result = (h / 6) * sum;
                         break;
+                    case 5:
+                        for(int j=1; j<=5; j++){
+                            n = (int) Math.pow(10,j);
+                            h = (b - a) / n;
+                            sum = 0.0;
+
+                            for (int i = 0; i < n; i++) {
+                                double x = a + i * h;
+                                sum += calculateValue(mathFunction,x);
+                                outToClient.writeInt(tik++);
+                            }
+                            result = sum * h;
+                            rectangle[j-1] = result;
+                        }
+
+                        for(int j=1; j<=5; j++){
+                            n = (int) Math.pow(10,j);
+                            h = (b - a) / n;
+                            sum = 0.5 * (calculateValue(mathFunction,a) + calculateValue(mathFunction,b));
+
+                            for (int i = 0; i < n; i++) {
+                                double x = a + i * h;
+                                sum += calculateValue(mathFunction,x);
+                                outToClient.writeInt(tik++);
+                            }
+                            result = sum * h;
+                            trapeze[j-1] = result;
+                        }
+
+                        for(int j=1; j<=5; j++){
+                            n = (int) Math.pow(10,j);
+                            h = (b - a) / n;
+                            sum = calculateValue(mathFunction,a) + calculateValue(mathFunction, b);
+
+                            for (int i = 1; i < n; i++) {
+                                double x = a + i * h;
+                                sum += 2 * calculateValue(mathFunction, x);
+                                outToClient.writeInt(tik++);
+                            }
+
+                            for (int i = 1; i <= n; i++) {
+                                double x = a + i * h;
+                                sum += 4 * calculateValue(mathFunction,x - h / 2);
+                                outToClient.writeInt(tik++);
+                            }
+                            result = (h / 6) * sum;
+                            parabolas[j-1] = result;
+                        }
+
+                        outToClient.writeInt(-1);
+
                     default:
                         System.out.println("Niepoprawny wybór metody.");
                 }
 
-                outToClient.writeDouble(result);
                 long executionTime = System.nanoTime() - nanoActualTime;
+                if(methodChoice == 5){
+                    outToClient.writeObject(rectangle);
+                    outToClient.writeObject(trapeze);
+                    outToClient.writeObject(parabolas);
+                }
+                else{
+                    outToClient.writeDouble(result);
+                }
                 outToClient.writeLong(executionTime);
                 outToClient.flush();
 
