@@ -110,7 +110,11 @@ public class IntegrationClientGUI extends JFrame {
         partitionsTextField.setBounds(windowWidth/2+80,260,100,20);
         panel.add(partitionsTextField);
 
+<<<<<<< HEAD
         integrationTableLength = new JSlider(1,15,1);
+=======
+        integrationTableLength = new JSlider(1,17,1);
+>>>>>>> abb6b04aa806669ac88a591ec18ebf7689304321
 
         integrationTableLength.setBounds(windowWidth/2+80,260,100,20);
         integrationTableLength.setVisible(false);
@@ -304,7 +308,11 @@ public class IntegrationClientGUI extends JFrame {
                         }
                     }
                     else if(option == 4){
+<<<<<<< HEAD
                         int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551};
+=======
+                        int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551, 2489754, 5242194};
+>>>>>>> abb6b04aa806669ac88a591ec18ebf7689304321
                       
                         int i =0;
                         String tik = "";
