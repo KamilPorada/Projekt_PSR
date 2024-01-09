@@ -45,6 +45,7 @@ public class RecursiveIntegrationServer1 {
                 nanoStartTime = System.nanoTime();
 
                 for(int i=0;i<n1;i++) {
+
                     for(int j=0;j<n;j++)
                     {
                         if(j<=i)
@@ -89,7 +90,7 @@ public class RecursiveIntegrationServer1 {
                 nanoEndTime = System.nanoTime();
                 outToClient.writeObject("Stop");
                 if(methodChoice == 5)
-                    outToClient.writeObject(temp);
+                    outToClient.writeObject(result);
                 else
                     outToClient.writeDouble(result[n-1][n-1]);
                 long executionTime = nanoEndTime - nanoStartTime;
@@ -117,7 +118,6 @@ public class RecursiveIntegrationServer1 {
 
     private static double RombergMethod(int i, int j, double begin, double end, String mathFunction, ObjectOutputStream outToClient) throws IOException {
         outToClient.writeObject("Tik z serwera 1: " + tik++);
-        System.out.println("Tik z serwera 1: " + tik++);
         double h=(end-begin)/Math.pow(2,i);
         if(i==0 && j==0)
             return 0.5*calculateValue(mathFunction, begin)+0.5*calculateValue(mathFunction, end);
