@@ -86,7 +86,7 @@ public class IterativeIntegrationServer {
                             for (int i = 0; i < n; i++) {
                                 double x = a + i * h;
                                 sum += calculateValue(mathFunction,x);
-                                outToClient.writeInt(tik++);
+                                outToClient.writeInt(1);
                             }
                             result = sum * h;
                             rectangle[j-1] = result;
@@ -100,7 +100,7 @@ public class IterativeIntegrationServer {
                             for (int i = 0; i < n; i++) {
                                 double x = a + i * h;
                                 sum += calculateValue(mathFunction,x);
-                                outToClient.writeInt(tik++);
+                                outToClient.writeInt(2);
                             }
                             result = sum * h;
                             trapeze[j-1] = result;
@@ -114,13 +114,13 @@ public class IterativeIntegrationServer {
                             for (int i = 1; i < n; i++) {
                                 double x = a + i * h;
                                 sum += 2 * calculateValue(mathFunction, x);
-                                outToClient.writeInt(tik++);
+                                outToClient.writeInt(3);
                             }
 
                             for (int i = 1; i <= n; i++) {
                                 double x = a + i * h;
                                 sum += 4 * calculateValue(mathFunction,x - h / 2);
-                                outToClient.writeInt(tik++);
+                                outToClient.writeInt(3);
                             }
                             result = (h / 6) * sum;
                             parabolas[j-1] = result;

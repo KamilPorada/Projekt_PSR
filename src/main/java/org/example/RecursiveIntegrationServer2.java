@@ -75,7 +75,6 @@ public class RecursiveIntegrationServer2 {
 
     private static double RombergMethod(int i, int j, double begin, double end, String mathFunction, ObjectOutputStream outToServer1) throws IOException {
         outToServer1.writeObject("Tik z serwera 2: " + tik++);
-        System.out.println("Tik z serwera 2: " + tik++);
         double h=(end-begin)/Math.pow(2,i);
         if(i==0 && j==0)
             return 0.5*calculateValue(mathFunction, begin)+0.5*calculateValue(mathFunction, end);

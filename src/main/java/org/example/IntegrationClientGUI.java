@@ -110,11 +110,7 @@ public class IntegrationClientGUI extends JFrame {
         partitionsTextField.setBounds(windowWidth/2+80,260,100,20);
         panel.add(partitionsTextField);
 
-<<<<<<< HEAD
         integrationTableLength = new JSlider(1,15,1);
-=======
-        integrationTableLength = new JSlider(1,17,1);
->>>>>>> abb6b04aa806669ac88a591ec18ebf7689304321
 
         integrationTableLength.setBounds(windowWidth/2+80,260,100,20);
         integrationTableLength.setVisible(false);
@@ -183,16 +179,6 @@ public class IntegrationClientGUI extends JFrame {
         calculateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(methodComboBox.getSelectedIndex()==4) {
-                    try {
-                        performAllIntegration(panel);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-                else
                     performIntegration();
             }
         });
@@ -290,6 +276,12 @@ public class IntegrationClientGUI extends JFrame {
             outToServer.flush();
 
             SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+                double[] rectangle = new double[7];
+                double[] trapeze = new double[7];
+                double[] parabolas = new double[7];
+                double[][] romberg = new double[16][16];
+
+                long startTime, endTime;
                 @Override
                 protected Void doInBackground() throws Exception {
                     if(option == 1 || option == 2){
@@ -308,12 +300,8 @@ public class IntegrationClientGUI extends JFrame {
                         }
                     }
                     else if(option == 4){
-<<<<<<< HEAD
                         int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551};
-=======
-                        int[] counter = {1,7,27,81,213,519,1207,2725,6033,13179,28515,61257,130861,278287,589551, 2489754, 5242194};
->>>>>>> abb6b04aa806669ac88a591ec18ebf7689304321
-                      
+
                         int i =0;
                         String tik = "";
                         for(;;){
@@ -325,6 +313,64 @@ public class IntegrationClientGUI extends JFrame {
                             publish(percentage);
                             i++;
                         }
+                    }
+                    else if(option == 5){
+                        startTime = System.nanoTime();
+                        String tikr = "";
+                        int tik;
+                        //        int counter = 589551 + 4444433;
+                        int counter = 589551 + 444434;
+                        int c =0;
+                        int percentage = 0;
+
+                        for(;;){
+                            tik = inFromServer.readInt();
+                            if(tik == -1)
+                                break;
+                            percentage = (int) (((double) c / counter) * 100);
+                            publish(percentage);
+                            c++;
+                        }
+                        rectangle = (double[]) inFromServer.readObject();
+                        trapeze = (double[]) inFromServer.readObject();
+                        parabolas = (double[]) inFromServer.readObject();
+
+                        inFromServer.readLong();
+
+                        Socket socket = new Socket("localhost", 1000);
+
+                        ObjectOutputStream outToRecursiveServer = new ObjectOutputStream(socket.getOutputStream());
+                        ObjectInputStream inFromRecursiveServer = new ObjectInputStream(socket.getInputStream());
+
+                        outToRecursiveServer.writeInt(option);
+                        outToRecursiveServer.writeDouble(a);
+                        outToRecursiveServer.writeDouble(b);
+                        outToRecursiveServer.writeInt(10);
+                        outToRecursiveServer.writeInt(5);
+                        outToRecursiveServer.writeObject(mathFunction);
+                        outToRecursiveServer.flush();
+
+
+                        for(;;){
+                            tikr = (String) inFromRecursiveServer.readObject();
+                            if(tikr.compareTo("Stop") == 0){
+                                System.out.println("Stop");
+                                break;
+                            }
+                            percentage = (int) (((double) c / counter) * 100);
+                            publish(percentage);
+                            c++;
+                        }
+
+                        romberg = (double[][]) inFromRecursiveServer.readObject();
+//                        for(int i=0;i<romberg.length;i++){
+//                            for(int j=0; j<romberg.length; j++){
+//                                System.out.print(romberg[i][j] + "    ");
+//                            }
+//                            System.out.println();
+//                        }
+                        inFromRecursiveServer.readLong();
+                        endTime = System.nanoTime();
                     }
                     return null;
                 }
@@ -356,6 +402,26 @@ public class IntegrationClientGUI extends JFrame {
                             }
                         }
                     }
+                    else{
+                        Socket socket = null;
+                        ObjectOutputStream outToSummaryServer;
+                        ObjectInputStream inFromSummaryServer;
+                        try {
+                            socket = new Socket("localhost", 4000);
+                            outToSummaryServer = new ObjectOutputStream(socket.getOutputStream());
+                            inFromSummaryServer = new ObjectInputStream(socket.getInputStream());
+
+                            outToSummaryServer.writeObject(rectangle);
+                            outToSummaryServer.writeObject(trapeze);
+                            outToSummaryServer.writeObject(parabolas);
+                            outToSummaryServer.writeObject(romberg);
+                            outToSummaryServer.writeObject(formatElapsedTimeInSeconds(endTime-startTime));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+
+                    }
                 }
             };
 
@@ -366,99 +432,6 @@ public class IntegrationClientGUI extends JFrame {
         }
     }
 
-    private void performAllIntegration(JPanel panel) throws IOException, ClassNotFoundException {
-        long startTime = System.nanoTime();
-        Socket socket;
-        double a = Double.parseDouble(fromTextField.getText());
-        double b = Double.parseDouble(toTextField.getText());
-        int option = methodComboBox.getSelectedIndex() + 1;
-        int n = option == 4 ? integrationTableLength.getValue() : Integer.parseInt(partitionsTextField.getText());
-
-        socket = new Socket("localhost", 3000);
-        ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
-
-        outToServer.writeInt(option);
-        outToServer.flush();
-
-        outToServer.writeDouble(a);
-        outToServer.writeDouble(b);
-        outToServer.writeInt(n);
-        outToServer.flush();
-
-        outToServer.writeObject(mathFunction);
-        outToServer.flush();
-
-        String tikr = "";
-        int tik;
-//        int counter = 589551 + 4444433;
-        int counter = 589551 + 444434;
-        int c =0;
-
-        for(;;){
-            tik = inFromServer.readInt();
-            if(tik == -1)
-                break;
-            int percentage = (int) (((double) c / counter) * 100);
-            c++;
-        }
-
-        double[] rectangle = (double[]) inFromServer.readObject();
-        double[] trapeze = (double[]) inFromServer.readObject();
-        double[] parabolas = (double[]) inFromServer.readObject();
-
-        inFromServer.readLong();
-        System.out.println("Metoda prostokątów:");
-        for(int i=0;i<rectangle.length;i++){
-            System.out.print(String.format("%.4f", rectangle[i]));
-            System.out.print("   |");
-        }
-        System.out.println();
-        System.out.println("Metoda trapezów:");
-        for(int i=0;i<trapeze.length;i++){
-            System.out.print(String.format("%.4f", trapeze[i]));
-            System.out.print("   |");
-        }
-        System.out.println();
-        System.out.println("Metoda parabol:");
-        for(int i=0;i<parabolas.length;i++){
-            System.out.print(String.format("%.4f", parabolas[i]));
-            System.out.print("   |");
-        }
-        System.out.println();
-
-        socket = new Socket("localhost", 1000);
-
-        outToServer = new ObjectOutputStream(socket.getOutputStream());
-        inFromServer = new ObjectInputStream(socket.getInputStream());
-
-        outToServer.writeInt(option);
-        outToServer.writeDouble(a);
-        outToServer.writeDouble(b);
-        outToServer.writeInt(10);
-        outToServer.writeInt(5);
-        outToServer.writeObject(mathFunction);
-        outToServer.flush();
-
-
-        for(;;){
-            tikr = (String) inFromServer.readObject();
-            if(tikr.compareTo("Stop") == 0)
-                break;
-            int percentage = (int) (((double) c / counter) * 100);
-            c++;
-        }
-
-        String result = (String) inFromServer.readObject();
-        System.out.println("Metoda Romberga:");
-        System.out.print(result);
-        inFromServer.readLong();
-        long endTime = System.nanoTime();
-
-
-        System.out.print("Czas całkowania: " + formatElapsedTimeInSeconds(endTime-startTime));
-
-    }
 
     private void resetFields() {
         fromTextField.setText("");
