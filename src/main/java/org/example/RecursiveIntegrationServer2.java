@@ -14,7 +14,7 @@ public class RecursiveIntegrationServer2 {
     public static void main(String[] args) {
 
         try {
-            ServerSocket serverSocket = new ServerSocket(2000);
+            ServerSocket serverSocket = new ServerSocket(2222);
 
             while (true) {
                 Socket socket = serverSocket.accept();
@@ -29,7 +29,6 @@ public class RecursiveIntegrationServer2 {
                 int n = inFromServer1.readInt();
                 String mathFunction = (String) inFromServer1.readObject();
                 double[][] result = (double[][]) inFromServer1.readObject();
-                String temp = (String) inFromServer1.readObject();
 
                 for(int i=n1;i<n;i++) {
                     for(int j=0;j<n;j++)
@@ -41,17 +40,8 @@ public class RecursiveIntegrationServer2 {
                     }
                 }
 
-                for(int i=n1;i<n;i++) {
-                    for(int j=0;j<n;j++)
-                    {
-                        if(j<=i)
-                            temp=temp+String.format("%.3f", Math.round(result[i][j] * 1000.0) / 1000.0)+"  ";
-                    }
-                    temp=temp+"\n";
-                }
                 outToServer1.writeObject("Stop");
                 outToServer1.writeObject(result);
-                outToServer1.writeObject(temp);
                 outToServer1.flush();
 
                 outToServer1.close();
@@ -69,8 +59,7 @@ public class RecursiveIntegrationServer2 {
                 .build()
                 .setVariable("x", x);
 
-        double result = expression.evaluate();
-        return result;
+        return expression.evaluate();
     }
 
     private static double RombergMethod(int i, int j, double begin, double end, String mathFunction, ObjectOutputStream outToServer1) throws IOException {

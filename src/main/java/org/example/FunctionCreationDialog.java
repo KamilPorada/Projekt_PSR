@@ -2,18 +2,16 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 class FunctionCreationDialog extends JDialog {
 
-    private JLabel dialogTitleLabel, dialogFunction, dialogTitleInstruction, dialogTitleFunction, dialogTitleOperands, dialogInstruction;
-    private JLabel dialogPolynominale, dialogSquare, dialogSinus, dialogCosinus, dialogTangens, dialogCotangens, dialogPostPostfixSinus, dialogPostPostfixCosinus, dialogPostPostfixTangens, dialogPostPostfixCotngens;
-    private JButton dialogAddPolyminale, dialogAddSquare, dialogAddSinus, dialogAddCosinus, dialogAddTangens, dialogAddCotangens, dialogAdding, dialogSubstraction, dialogMultiplication, dialogDividing, dialogAccept, dialogReset;
-    private JTextField dialogPrefixPolynominale, dialogPostfixPolynominale, dialogPrefixSquare, dialogPostfixSquare, dialogPrefixSinus, dialogPostfixSinus,
+    private final JLabel dialogFunction;
+    private final JButton dialogAddPolyminale, dialogAddSquare, dialogAddSinus, dialogAddCosinus, dialogAddTangens,
+                          dialogAddCotangens, dialogAdding, dialogSubstraction;
+    private final JTextField dialogPrefixPolynominale, dialogPostfixPolynominale, dialogPrefixSquare, dialogPostfixSquare, dialogPrefixSinus, dialogPostfixSinus,
             dialogPrefixCosinus, dialogPostfixCosinus, dialogPrefixTangens, dialogPostfixTangens, dialogPrefixCotangens, dialogPostfixCotangens;
 
-    private boolean isOperand = false;
+    private boolean isOperand;
 
     private String mathFunction = "";
 
@@ -41,18 +39,18 @@ class FunctionCreationDialog extends JDialog {
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
-        dialogTitleLabel = new JLabel("<html><body style='text-align: center'>Wzór funkcji:", SwingConstants.CENTER);
-        dialogTitleLabel.setFont(new Font("Arial", Font.CENTER_BASELINE, 18));
+        JLabel dialogTitleLabel = new JLabel("<html><body style='text-align: center'>Wzór funkcji:", SwingConstants.CENTER);
+        dialogTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         dialogTitleLabel.setBounds(0, 0, dialogWidth, 30);
         panel.add(dialogTitleLabel);
 
         dialogFunction = new JLabel("<html><body style='text-align: center'>f(x)=.................................", SwingConstants.CENTER);
-        dialogFunction.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        dialogFunction.setFont(new Font("Arial", Font.BOLD, 16));
         dialogFunction.setBounds(0, 30, dialogWidth, 30);
         panel.add(dialogFunction);
 
-        dialogTitleFunction = new JLabel("<html><body style='text-align: center'>Podstawowe funkcje matematyczne:", SwingConstants.CENTER);
-        dialogTitleFunction.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogTitleFunction = new JLabel("<html><body style='text-align: center'>Podstawowe funkcje matematyczne:", SwingConstants.CENTER);
+        dialogTitleFunction.setFont(new Font("Arial", Font.BOLD, 16));
         dialogTitleFunction.setBounds(dialogWidth/4, 60, dialogWidth/2, 30);
         panel.add(dialogTitleFunction);
 
@@ -67,8 +65,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPrefixPolynominale.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPrefixPolynominale);
 
-        dialogPolynominale = new JLabel("<html><body style='text-align: center'>x", SwingConstants.CENTER);
-        dialogPolynominale.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogPolynominale = new JLabel("<html><body style='text-align: center'>x", SwingConstants.CENTER);
+        dialogPolynominale.setFont(new Font("Arial", Font.BOLD, 16));
         dialogPolynominale.setBounds(287, 100, 20, 20);
         panel.add(dialogPolynominale);
 
@@ -88,8 +86,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPrefixSquare.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPrefixSquare);
 
-        dialogSquare = new JLabel("<html><body style='text-align: center'>√", SwingConstants.CENTER);
-        dialogSquare.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogSquare = new JLabel("<html><body style='text-align: center'>√", SwingConstants.CENTER);
+        dialogSquare.setFont(new Font("Arial", Font.BOLD, 16));
         dialogSquare.setBounds(287, 140, 20, 20);
         panel.add(dialogSquare);
 
@@ -109,8 +107,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPrefixSinus.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPrefixSinus);
 
-        dialogSinus = new JLabel("<html><body style='text-align: center'>sin(", SwingConstants.CENTER);
-        dialogSinus.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogSinus = new JLabel("<html><body style='text-align: center'>sin(", SwingConstants.CENTER);
+        dialogSinus.setFont(new Font("Arial", Font.BOLD, 16));
         dialogSinus.setBounds(293, 180, 30, 20);
         panel.add(dialogSinus);
 
@@ -119,8 +117,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPostfixSinus.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPostfixSinus);
 
-        dialogPostPostfixSinus = new JLabel("<html><body style='text-align: center'>x)", SwingConstants.CENTER);
-        dialogPostPostfixSinus.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogPostPostfixSinus = new JLabel("<html><body style='text-align: center'>x)", SwingConstants.CENTER);
+        dialogPostPostfixSinus.setFont(new Font("Arial", Font.BOLD, 16));
         dialogPostPostfixSinus.setBounds(352, 180, 30, 20);
         panel.add(dialogPostPostfixSinus);
 
@@ -135,8 +133,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPrefixCosinus.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPrefixCosinus);
 
-        dialogCosinus = new JLabel("<html><body style='text-align: center'>cos(", SwingConstants.CENTER);
-        dialogCosinus.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogCosinus = new JLabel("<html><body style='text-align: center'>cos(", SwingConstants.CENTER);
+        dialogCosinus.setFont(new Font("Arial", Font.BOLD, 16));
         dialogCosinus.setBounds(293, 220, 33, 20);
         panel.add(dialogCosinus);
 
@@ -145,8 +143,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPostfixCosinus.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPostfixCosinus);
 
-        dialogPostPostfixCosinus = new JLabel("<html><body style='text-align: center'>x)", SwingConstants.CENTER);
-        dialogPostPostfixCosinus.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogPostPostfixCosinus = new JLabel("<html><body style='text-align: center'>x)", SwingConstants.CENTER);
+        dialogPostPostfixCosinus.setFont(new Font("Arial", Font.BOLD, 16));
         dialogPostPostfixCosinus.setBounds(352, 220, 30, 20);
         panel.add(dialogPostPostfixCosinus);
 
@@ -161,8 +159,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPrefixTangens.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPrefixTangens);
 
-        dialogTangens = new JLabel("<html><body style='text-align: center'>tan(", SwingConstants.CENTER);
-        dialogTangens.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogTangens = new JLabel("<html><body style='text-align: center'>tan(", SwingConstants.CENTER);
+        dialogTangens.setFont(new Font("Arial", Font.BOLD, 16));
         dialogTangens.setBounds(293, 260, 33, 20);
         panel.add(dialogTangens);
 
@@ -171,8 +169,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPostfixTangens.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPostfixTangens);
 
-        dialogPostPostfixTangens = new JLabel("<html><body style='text-align: center'>x)", SwingConstants.CENTER);
-        dialogPostPostfixTangens.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogPostPostfixTangens = new JLabel("<html><body style='text-align: center'>x)", SwingConstants.CENTER);
+        dialogPostPostfixTangens.setFont(new Font("Arial", Font.BOLD, 16));
         dialogPostPostfixTangens.setBounds(352, 260, 30, 20);
         panel.add(dialogPostPostfixTangens);
 
@@ -187,8 +185,8 @@ class FunctionCreationDialog extends JDialog {
         dialogPrefixCotangens.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPrefixCotangens);
 
-        dialogCotangens = new JLabel("<html><body style='text-align: center'>ctg(", SwingConstants.CENTER);
-        dialogCotangens.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogCotangens = new JLabel("<html><body style='text-align: center'>ctg(", SwingConstants.CENTER);
+        dialogCotangens.setFont(new Font("Arial", Font.BOLD, 16));
         dialogCotangens.setBounds(293, 300, 33, 20);
         panel.add(dialogCotangens);
 
@@ -197,13 +195,13 @@ class FunctionCreationDialog extends JDialog {
         dialogPostfixCotangens.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.add(dialogPostfixCotangens);
 
-        dialogPostPostfixCotngens = new JLabel("<html><body style='text-align: center'>x)", SwingConstants.CENTER);
-        dialogPostPostfixCotngens.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogPostPostfixCotngens = new JLabel("<html><body style='text-align: center'>x)", SwingConstants.CENTER);
+        dialogPostPostfixCotngens.setFont(new Font("Arial", Font.BOLD, 16));
         dialogPostPostfixCotngens.setBounds(352, 300, 30, 20);
         panel.add(dialogPostPostfixCotngens);
 
-        dialogTitleOperands = new JLabel("<html><body style='text-align: center'>Operatory arytmetyczne:", SwingConstants.CENTER);
-        dialogTitleOperands.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogTitleOperands = new JLabel("<html><body style='text-align: center'>Operatory arytmetyczne:", SwingConstants.CENTER);
+        dialogTitleOperands.setFont(new Font("Arial", Font.BOLD, 16));
         dialogTitleOperands.setBounds(3*dialogWidth/4, 90, dialogWidth/4, 35);
         panel.add(dialogTitleOperands);
 
@@ -221,31 +219,17 @@ class FunctionCreationDialog extends JDialog {
         dialogSubstraction.setEnabled(false);
         panel.add(dialogSubstraction);
 
-        dialogMultiplication = new JButton("×");
-        dialogMultiplication.setFont(new Font("Arial", Font.PLAIN, 20));
-        dialogMultiplication.setBounds(470, 160, 25, 25);
-        dialogMultiplication.setBorder(BorderFactory.createLineBorder(new Color(10,100,255),2,true));
-        dialogMultiplication.setEnabled(false);
-        panel.add(dialogMultiplication);
-
-        dialogDividing = new JButton("÷");
-        dialogDividing.setFont(new Font("Arial", Font.PLAIN, 20));
-        dialogDividing.setBounds(510, 160, 25, 25);
-        dialogDividing.setBorder(BorderFactory.createLineBorder(new Color(10,100,255),2,true));
-        dialogDividing.setEnabled(false);
-        panel.add(dialogDividing);
-
-        dialogTitleInstruction = new JLabel("<html><body style='text-align: center'>Instrukcja:", SwingConstants.CENTER);
-        dialogTitleInstruction.setFont(new Font("Arial", Font.CENTER_BASELINE, 16));
+        JLabel dialogTitleInstruction = new JLabel("<html><body style='text-align: center'>Instrukcja:", SwingConstants.CENTER);
+        dialogTitleInstruction.setFont(new Font("Arial", Font.BOLD, 16));
         dialogTitleInstruction.setBounds(10, 90, dialogWidth/4, 35);
         panel.add(dialogTitleInstruction);
 
-        dialogInstruction = new JLabel("<html><body style='text-align: center'>1.Wybierz jedną z funkcji matematycznych i uzupełnij ją odpowiednimi liczbami.<br>2.Wciśnij znak + obok danej funkcji, aby dodać daną unkcję do wzoru funkcji.<br>3.Wybierz jeden z operatorów arytmetycznych.<br>4.Dodawaj naprzemiennie stworzone funkcje oraz operatory arytmetyczne.<br>5.Zakończ wciskając przycisk Akceptuj lub wyczyść wzór funkcji wciskając przycisk Resetuj i twórz wzór funkcji od nowa!", SwingConstants.CENTER);
-        dialogInstruction.setFont(new Font("Arial", Font.CENTER_BASELINE, 10));
+        JLabel dialogInstruction = new JLabel("<html><body style='text-align: center'>1.Wybierz jedną z funkcji matematycznych i uzupełnij ją odpowiednimi liczbami.<br>2.Wciśnij znak + obok danej funkcji, aby dodać daną funkcję do wzoru funkcji.<br>3.Wybierz jeden z operatorów arytmetycznych.<br>4.Dodawaj naprzemiennie stworzone funkcje oraz operatory arytmetyczne.<br>5.Zakończ wciskając przycisk Akceptuj lub wyczyść wzór funkcji wciskając przycisk Resetuj i twórz wzór funkcji od nowa!", SwingConstants.CENTER);
+        dialogInstruction.setFont(new Font("Arial", Font.BOLD, 10));
         dialogInstruction.setBounds(10, 75, dialogWidth/4, 300);
         panel.add(dialogInstruction);
 
-        dialogReset = new JButton("Resetuj pola");
+        JButton dialogReset = new JButton("Resetuj pola");
         dialogReset.setFont(new Font("Arial", Font.BOLD, 16));
         dialogReset.setBounds(dialogWidth/8, 360, dialogWidth/3, 25);
         dialogReset.setOpaque(true);
@@ -256,7 +240,7 @@ class FunctionCreationDialog extends JDialog {
         dialogReset.setForeground(Color.white);
         panel.add(dialogReset);
 
-        dialogAccept = new JButton("Akceptuj");
+        JButton dialogAccept = new JButton("Akceptuj");
         dialogAccept.setFont(new Font("Arial", Font.BOLD, 16));
         dialogAccept.setBounds(dialogWidth/2+dialogWidth/15, 360, dialogWidth/3, 25);
         dialogAccept.setOpaque(true);
@@ -267,239 +251,192 @@ class FunctionCreationDialog extends JDialog {
         dialogAccept.setForeground(Color.white);
         panel.add(dialogAccept);
 
+        isOperand = false;
+
         add(panel);
 
-        dialogAddPolyminale.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(dialogPrefixPolynominale.getText().compareTo("") != 0 && dialogPostfixPolynominale.getText().compareTo("") != 0 && Integer.parseInt(dialogPrefixPolynominale.getText()) != 0){
-                    if(Integer.parseInt(dialogPrefixPolynominale.getText()) == 1 && Integer.parseInt(dialogPostfixPolynominale.getText()) > 1){
-                        function[0] = function[0] + "x<sup>" + dialogPostfixPolynominale.getText() + "</sup>";
-                    }
-                    else if(Integer.parseInt(dialogPostfixPolynominale.getText()) == 0){
-                        function[0] = function[0] + dialogPrefixPolynominale.getText();
-                    }
-                    else if(Integer.parseInt(dialogPostfixPolynominale.getText()) == 1 && Integer.parseInt(dialogPrefixPolynominale.getText()) != 1){
-                        function[0] = function[0] + dialogPrefixPolynominale.getText() + "x";
-                    }
-                    else if(Integer.parseInt(dialogPrefixPolynominale.getText()) == 1 && Integer.parseInt(dialogPostfixPolynominale.getText()) == 1){
-                        function[0] = function[0] + "x";
-                    }
-                    else{
-                        function[0] = function[0] + dialogPrefixPolynominale.getText() + "x<sup>" + dialogPostfixPolynominale.getText() + "</sup>";
-                    }
-                    dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                    mathFunction = mathFunction + dialogPrefixPolynominale.getText() + "*x^" + dialogPostfixPolynominale.getText();
-                    isOperand=true;
-                    checkControls();
-                    resetFields();
+        dialogAddPolyminale.addActionListener(e -> {
+            if(dialogPrefixPolynominale.getText().compareTo("") != 0 && dialogPostfixPolynominale.getText().compareTo("") != 0  && isNumericAndDifferentFromZero(dialogPrefixPolynominale.getText()) && isNumeric(dialogPostfixPolynominale.getText())){
+                if(Integer.parseInt(dialogPrefixPolynominale.getText()) == 1 && Integer.parseInt(dialogPostfixPolynominale.getText()) > 1){
+                    function[0] = function[0] + "x<sup>" + dialogPostfixPolynominale.getText() + "</sup>";
                 }
-            }
-        });
-
-        dialogAddSquare.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dialogPrefixSquare.getText().compareTo("") != 0 && dialogPostfixSquare.getText().compareTo("") != 0 && Integer.parseInt(dialogPrefixSquare.getText()) != 0) {
-                    if(Integer.parseInt(dialogPrefixSquare.getText()) == 1 && Integer.parseInt(dialogPostfixSquare.getText()) > 1){
-                        function[0] = function[0] +  "√" + dialogPostfixSquare.getText() + "x";
-                    }
-                    else if(Integer.parseInt(dialogPostfixSquare.getText()) == 0){
-                        function[0] = function[0] + dialogPrefixSquare.getText();
-                    }
-                    else if(Integer.parseInt(dialogPostfixSquare.getText()) == 1 && Integer.parseInt(dialogPrefixSquare.getText()) != 1){
-                        function[0] = function[0] + dialogPrefixSquare.getText() + "√x";
-                    }
-                    else if(Integer.parseInt(dialogPrefixSquare.getText()) == 1 && Integer.parseInt(dialogPostfixSquare.getText()) == 1){
-                        function[0] = function[0] + "√x";
-                    }
-                    else{
-                        function[0] = function[0] + dialogPrefixSquare.getText() + "√" + dialogPostfixSquare.getText() + "x";
-                    }
-                    dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                    mathFunction = mathFunction + dialogPrefixSquare.getText() + "*sqrt(x*" + dialogPostfixSquare.getText() + ")";
-                    isOperand = true;
-                    checkControls();
-                    resetFields();
+                else if(Integer.parseInt(dialogPostfixPolynominale.getText()) == 0){
+                    function[0] = function[0] + dialogPrefixPolynominale.getText();
                 }
-            }
-        });
-
-        dialogAddSinus.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dialogPrefixSinus.getText().compareTo("") != 0 && dialogPostfixSinus.getText().compareTo("") != 0 && Integer.parseInt(dialogPrefixSinus.getText()) != 0) {
-                    if(Integer.parseInt(dialogPrefixSinus.getText()) == 1 && Integer.parseInt(dialogPostfixSinus.getText()) > 1){
-                        function[0] = function[0] +  "sin(" + dialogPostfixSinus.getText() + "x)";
-                    }
-                    else if(Integer.parseInt(dialogPostfixSinus.getText()) == 0){
-                        function[0] = function[0] + dialogPrefixSinus.getText();
-                    }
-                    else if(Integer.parseInt(dialogPostfixSinus.getText()) == 1 && Integer.parseInt(dialogPrefixSinus.getText()) != 1){
-                        function[0] = function[0] + dialogPrefixSinus.getText() + "sin(x)";
-                    }
-                    else if(Integer.parseInt(dialogPrefixSinus.getText()) == 1 && Integer.parseInt(dialogPostfixSinus.getText()) == 1){
-                        function[0] = function[0] + "sin(x)";
-                    }
-                    else{
-                        function[0] = function[0] + dialogPrefixSinus.getText() + "sin(" + dialogPostfixSinus.getText() + "x)";
-                    }
-                    dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                    mathFunction = mathFunction + dialogPrefixSinus.getText() + "*sin(x*" + dialogPostfixSinus.getText() + ")";
-                    isOperand = true;
-                    checkControls();
-                    resetFields();
+                else if(Integer.parseInt(dialogPostfixPolynominale.getText()) == 1 && Integer.parseInt(dialogPrefixPolynominale.getText()) != 1){
+                    function[0] = function[0] + dialogPrefixPolynominale.getText() + "x";
                 }
-            }
-        });
-
-        dialogAddCosinus.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dialogPrefixCosinus.getText().compareTo("") != 0 && dialogPostfixCosinus.getText().compareTo("") != 0 && Integer.parseInt(dialogPrefixCosinus.getText()) != 0) {
-                    if(Integer.parseInt(dialogPrefixCosinus.getText()) == 1 && Integer.parseInt(dialogPostfixCosinus.getText()) > 1){
-                        function[0] = function[0] +  "cos(" + dialogPostfixCosinus.getText() + "x)";
-                    }
-                    else if(Integer.parseInt(dialogPostfixCosinus.getText()) == 0){
-                        function[0] = function[0] + dialogPrefixCosinus.getText();
-                    }
-                    else if(Integer.parseInt(dialogPostfixCosinus.getText()) == 1 && Integer.parseInt(dialogPrefixCosinus.getText()) != 1){
-                        function[0] = function[0] + dialogPrefixCosinus.getText() + "cos(x)";
-                    }
-                    else if(Integer.parseInt(dialogPrefixCosinus.getText()) == 1 && Integer.parseInt(dialogPostfixCosinus.getText()) == 1){
-                        function[0] = function[0] + "cos(x)";
-                    }
-                    else{
-                        function[0] = function[0] + dialogPrefixCosinus.getText() + "cos(" + dialogPostfixCosinus.getText() + "x)";
-                    }
-                    dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                    mathFunction = mathFunction + dialogPrefixCosinus.getText() + "*cos(x*" + dialogPostfixCosinus.getText() + ")";
-                    isOperand = true;
-                    checkControls();
-                    resetFields();
+                else if(Integer.parseInt(dialogPrefixPolynominale.getText()) == 1 && Integer.parseInt(dialogPostfixPolynominale.getText()) == 1){
+                    function[0] = function[0] + "x";
                 }
-            }
-        });
-
-        dialogAddTangens.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dialogPrefixTangens.getText().compareTo("") != 0 && dialogPostfixTangens.getText().compareTo("") != 0 && Integer.parseInt(dialogPrefixTangens.getText()) != 0) {
-                    if(Integer.parseInt(dialogPrefixTangens.getText()) == 1 && Integer.parseInt(dialogPostfixTangens.getText()) > 1){
-                        function[0] = function[0] +  "tan(" + dialogPostfixTangens.getText() + "x)";
-                    }
-                    else if(Integer.parseInt(dialogPostfixTangens.getText()) == 0){
-                        function[0] = function[0] + dialogPrefixTangens.getText();
-                    }
-                    else if(Integer.parseInt(dialogPostfixTangens.getText()) == 1 && Integer.parseInt(dialogPrefixTangens.getText()) != 1){
-                        function[0] = function[0] + dialogPrefixTangens.getText() + "tan(x)";
-                    }
-                    else if(Integer.parseInt(dialogPrefixTangens.getText()) == 1 && Integer.parseInt(dialogPostfixTangens.getText()) == 1){
-                        function[0] = function[0] + "tan(x)";
-                    }
-                    else{
-                        function[0] = function[0] + dialogPrefixTangens.getText() + "tan(" + dialogPostfixTangens.getText() + "x)";
-                    }                    
-                    dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                    mathFunction = mathFunction + dialogPrefixTangens.getText() + "*tan(x*" + dialogPostfixTangens.getText() + ")";
-                    isOperand = true;
-                    checkControls();
-                    resetFields();
+                else{
+                    function[0] = function[0] + dialogPrefixPolynominale.getText() + "x<sup>" + dialogPostfixPolynominale.getText() + "</sup>";
                 }
-            }
-        });
-
-        dialogAddCotangens.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dialogPrefixCotangens.getText().compareTo("") != 0 && dialogPostfixCotangens.getText().compareTo("") != 0 && Integer.parseInt(dialogPrefixCotangens.getText()) != 0) {
-                    if(Integer.parseInt(dialogPrefixCotangens.getText()) == 1 && Integer.parseInt(dialogPostfixCotangens.getText()) > 1){
-                        function[0] = function[0] +  "ctg(" + dialogPostfixCotangens.getText() + "x)";
-                    }
-                    else if(Integer.parseInt(dialogPostfixCotangens.getText()) == 0){
-                        function[0] = function[0] + dialogPrefixCotangens.getText();
-                    }
-                    else if(Integer.parseInt(dialogPostfixCotangens.getText()) == 1 && Integer.parseInt(dialogPrefixCotangens.getText()) != 1){
-                        function[0] = function[0] + dialogPrefixCotangens.getText() + "ctg(x)";
-                    }
-                    else if(Integer.parseInt(dialogPrefixCotangens.getText()) == 1 && Integer.parseInt(dialogPostfixCotangens.getText()) == 1){
-                        function[0] = function[0] + "ctg(x)";
-                    }
-                    else{
-                        function[0] = function[0] + dialogPrefixCotangens.getText() + "ctg(" + dialogPostfixCotangens.getText() + "x)";
-                    }
-                    dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                    mathFunction = mathFunction + dialogPrefixCotangens.getText() + "*cot(x*" + dialogPostfixCotangens.getText() + ")";
-                    isOperand = true;
-                    checkControls();
-                    resetFields();
-                }
-            }
-        });
-
-        dialogAdding.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                function[0] = function[0] + "+" ;
                 dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                mathFunction = mathFunction + "+";
-                isOperand=false;
-                checkControls();
-            }
-        });
-
-        dialogSubstraction.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                function[0] = function[0] + "-" ;
-                dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                mathFunction = mathFunction + "-";
-                isOperand=false;
-                checkControls();
-            }
-        });
-
-        dialogMultiplication.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                function[0] = function[0] + "×" ;
-                dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                mathFunction = mathFunction + "*";
-                isOperand=false;
-                checkControls();
-            }
-        });
-
-        dialogDividing.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                function[0] = function[0] + "÷" ;
-                dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
-                mathFunction = mathFunction + "/";
-                isOperand=false;
-                checkControls();
-            }
-        });
-
-        dialogReset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isOperand = false;
+                mathFunction = mathFunction + dialogPrefixPolynominale.getText() + "*x^" + dialogPostfixPolynominale.getText();
+                isOperand=true;
                 checkControls();
                 resetFields();
-                function[0] = "f(x)=";
-                dialogFunction.setText("<html><body style='text-align: center'>f(x)=.................................");
             }
         });
 
-        dialogAccept.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
+        dialogAddSquare.addActionListener(e -> {
+            if (dialogPrefixSquare.getText().compareTo("") != 0 && dialogPostfixSquare.getText().compareTo("") != 0 && isNumericAndDifferentFromZero(dialogPrefixSquare.getText()) && isNumeric(dialogPostfixSquare.getText())) {
+                if(Integer.parseInt(dialogPrefixSquare.getText()) == 1 && Integer.parseInt(dialogPostfixSquare.getText()) > 1){
+                    function[0] = function[0] +  "√" + dialogPostfixSquare.getText() + "x";
+                }
+                else if(Integer.parseInt(dialogPostfixSquare.getText()) == 0){
+                    function[0] = function[0] + dialogPrefixSquare.getText();
+                }
+                else if(Integer.parseInt(dialogPostfixSquare.getText()) == 1 && Integer.parseInt(dialogPrefixSquare.getText()) != 1){
+                    function[0] = function[0] + dialogPrefixSquare.getText() + "√x";
+                }
+                else if(Integer.parseInt(dialogPrefixSquare.getText()) == 1 && Integer.parseInt(dialogPostfixSquare.getText()) == 1){
+                    function[0] = function[0] + "√x";
+                }
+                else{
+                    function[0] = function[0] + dialogPrefixSquare.getText() + "√" + dialogPostfixSquare.getText() + "x";
+                }
+                dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
+                mathFunction = mathFunction + dialogPrefixSquare.getText() + "*sqrt(x*" + dialogPostfixSquare.getText() + ")";
+                isOperand = true;
+                checkControls();
+                resetFields();
             }
+        });
+
+        dialogAddSinus.addActionListener(e -> {
+            if (dialogPrefixSinus.getText().compareTo("") != 0 && dialogPostfixSinus.getText().compareTo("") != 0 && isNumericAndDifferentFromZero(dialogPrefixSinus.getText()) && isNumeric(dialogPostfixSinus.getText())) {
+                if(Integer.parseInt(dialogPrefixSinus.getText()) == 1 && Integer.parseInt(dialogPostfixSinus.getText()) > 1){
+                    function[0] = function[0] +  "sin(" + dialogPostfixSinus.getText() + "x)";
+                }
+                else if(Integer.parseInt(dialogPostfixSinus.getText()) == 0){
+                    function[0] = function[0] + dialogPrefixSinus.getText();
+                }
+                else if(Integer.parseInt(dialogPostfixSinus.getText()) == 1 && Integer.parseInt(dialogPrefixSinus.getText()) != 1){
+                    function[0] = function[0] + dialogPrefixSinus.getText() + "sin(x)";
+                }
+                else if(Integer.parseInt(dialogPrefixSinus.getText()) == 1 && Integer.parseInt(dialogPostfixSinus.getText()) == 1){
+                    function[0] = function[0] + "sin(x)";
+                }
+                else{
+                    function[0] = function[0] + dialogPrefixSinus.getText() + "sin(" + dialogPostfixSinus.getText() + "x)";
+                }
+                dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
+                mathFunction = mathFunction + dialogPrefixSinus.getText() + "*sin(x*" + dialogPostfixSinus.getText() + ")";
+                isOperand = true;
+                checkControls();
+                resetFields();
+            }
+        });
+
+        dialogAddCosinus.addActionListener(e -> {
+            if (dialogPrefixCosinus.getText().compareTo("") != 0 && dialogPostfixCosinus.getText().compareTo("") != 0 && isNumericAndDifferentFromZero(dialogPrefixCosinus.getText()) && isNumeric(dialogPostfixCosinus.getText())) {
+                if(Integer.parseInt(dialogPrefixCosinus.getText()) == 1 && Integer.parseInt(dialogPostfixCosinus.getText()) > 1){
+                    function[0] = function[0] +  "cos(" + dialogPostfixCosinus.getText() + "x)";
+                }
+                else if(Integer.parseInt(dialogPostfixCosinus.getText()) == 0){
+                    function[0] = function[0] + dialogPrefixCosinus.getText();
+                }
+                else if(Integer.parseInt(dialogPostfixCosinus.getText()) == 1 && Integer.parseInt(dialogPrefixCosinus.getText()) != 1){
+                    function[0] = function[0] + dialogPrefixCosinus.getText() + "cos(x)";
+                }
+                else if(Integer.parseInt(dialogPrefixCosinus.getText()) == 1 && Integer.parseInt(dialogPostfixCosinus.getText()) == 1){
+                    function[0] = function[0] + "cos(x)";
+                }
+                else{
+                    function[0] = function[0] + dialogPrefixCosinus.getText() + "cos(" + dialogPostfixCosinus.getText() + "x)";
+                }
+                dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
+                mathFunction = mathFunction + dialogPrefixCosinus.getText() + "*cos(x*" + dialogPostfixCosinus.getText() + ")";
+                isOperand = true;
+                checkControls();
+                resetFields();
+            }
+        });
+
+        dialogAddTangens.addActionListener(e -> {
+            if (dialogPrefixTangens.getText().compareTo("") != 0 && dialogPostfixTangens.getText().compareTo("") != 0 && isNumericAndDifferentFromZero(dialogPrefixTangens.getText()) && isNumeric(dialogPostfixTangens.getText())) {
+                if(Integer.parseInt(dialogPrefixTangens.getText()) == 1 && Integer.parseInt(dialogPostfixTangens.getText()) > 1){
+                    function[0] = function[0] +  "tan(" + dialogPostfixTangens.getText() + "x)";
+                }
+                else if(Integer.parseInt(dialogPostfixTangens.getText()) == 0){
+                    function[0] = function[0] + dialogPrefixTangens.getText();
+                }
+                else if(Integer.parseInt(dialogPostfixTangens.getText()) == 1 && Integer.parseInt(dialogPrefixTangens.getText()) != 1){
+                    function[0] = function[0] + dialogPrefixTangens.getText() + "tan(x)";
+                }
+                else if(Integer.parseInt(dialogPrefixTangens.getText()) == 1 && Integer.parseInt(dialogPostfixTangens.getText()) == 1){
+                    function[0] = function[0] + "tan(x)";
+                }
+                else{
+                    function[0] = function[0] + dialogPrefixTangens.getText() + "tan(" + dialogPostfixTangens.getText() + "x)";
+                }
+                dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
+                mathFunction = mathFunction + dialogPrefixTangens.getText() + "*tan(x*" + dialogPostfixTangens.getText() + ")";
+                isOperand = true;
+                checkControls();
+                resetFields();
+            }
+        });
+
+        dialogAddCotangens.addActionListener(e -> {
+            if (dialogPrefixCotangens.getText().compareTo("") != 0 && dialogPostfixCotangens.getText().compareTo("") != 0 && isNumericAndDifferentFromZero(dialogPrefixCotangens.getText()) && isNumeric(dialogPostfixCotangens.getText())) {
+                if(Integer.parseInt(dialogPrefixCotangens.getText()) == 1 && Integer.parseInt(dialogPostfixCotangens.getText()) > 1){
+                    function[0] = function[0] +  "ctg(" + dialogPostfixCotangens.getText() + "x)";
+                }
+                else if(Integer.parseInt(dialogPostfixCotangens.getText()) == 0){
+                    function[0] = function[0] + dialogPrefixCotangens.getText();
+                }
+                else if(Integer.parseInt(dialogPostfixCotangens.getText()) == 1 && Integer.parseInt(dialogPrefixCotangens.getText()) != 1){
+                    function[0] = function[0] + dialogPrefixCotangens.getText() + "ctg(x)";
+                }
+                else if(Integer.parseInt(dialogPrefixCotangens.getText()) == 1 && Integer.parseInt(dialogPostfixCotangens.getText()) == 1){
+                    function[0] = function[0] + "ctg(x)";
+                }
+                else{
+                    function[0] = function[0] + dialogPrefixCotangens.getText() + "ctg(" + dialogPostfixCotangens.getText() + "x)";
+                }
+                dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
+                mathFunction = mathFunction + dialogPrefixCotangens.getText() + "*cot(x*" + dialogPostfixCotangens.getText() + ")";
+                isOperand = true;
+                checkControls();
+                resetFields();
+            }
+        });
+
+
+        dialogAdding.addActionListener(e -> {
+            function[0] = function[0] + "+" ;
+            dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
+            mathFunction = mathFunction + "+";
+            isOperand=false;
+            checkControls();
+        });
+
+        dialogSubstraction.addActionListener(e -> {
+            function[0] = function[0] + "-" ;
+            dialogFunction.setText("<html><body style='text-align: center'>" + function[0] + "</body></html>");
+            mathFunction = mathFunction + "-";
+            isOperand=false;
+            checkControls();
+        });
+
+
+        dialogReset.addActionListener(e -> {
+            isOperand = false;
+            checkControls();
+            resetFields();
+            function[0] = "f(x)=";
+            dialogFunction.setText("<html><body style='text-align: center'>f(x)=.................................");
+        });
+
+        dialogAccept.addActionListener(e -> {
+
+            if(isOperand)
+                dispose();
         });
     }
-
 
     private void checkControls() {
         if(isOperand){
@@ -511,8 +448,6 @@ class FunctionCreationDialog extends JDialog {
             dialogAddCotangens.setEnabled(false);
             dialogAdding.setEnabled(true);
             dialogSubstraction.setEnabled(true);
-            dialogMultiplication.setEnabled(true);
-            dialogDividing.setEnabled(true);
         }
         else{
             dialogAddPolyminale.setEnabled(true);
@@ -523,8 +458,6 @@ class FunctionCreationDialog extends JDialog {
             dialogAddCotangens.setEnabled(true);
             dialogAdding.setEnabled(false);
             dialogSubstraction.setEnabled(false);
-            dialogMultiplication.setEnabled(false);
-            dialogDividing.setEnabled(false);
         }
     }
 
@@ -541,7 +474,24 @@ class FunctionCreationDialog extends JDialog {
         dialogPostfixTangens.setText("");
         dialogPrefixCotangens.setText("");
         dialogPostfixCotangens.setText("");
+    }
 
+    private boolean isNumericAndDifferentFromZero(String str) {
+        try {
+            Integer.parseInt(str);
+            return Integer.parseInt(str) != 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
 }

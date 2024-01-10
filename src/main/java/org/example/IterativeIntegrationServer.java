@@ -9,12 +9,11 @@ import java.net.Socket;
 
 public class IterativeIntegrationServer {
 
-    static int tik=0;
 
     public static void main(String[] args) {
         try {
 
-            ServerSocket serverSocket = new ServerSocket(3000);
+            ServerSocket serverSocket = new ServerSocket(3333);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -78,7 +77,7 @@ public class IterativeIntegrationServer {
                         result = (h / 6) * sum;
                         break;
                     case 5:
-                        for(int j=1; j<=5; j++){
+                        for(int j=1; j<=7; j++){
                             n = (int) Math.pow(10,j);
                             h = (b - a) / n;
                             sum = 0.0;
@@ -92,7 +91,7 @@ public class IterativeIntegrationServer {
                             rectangle[j-1] = result;
                         }
 
-                        for(int j=1; j<=5; j++){
+                        for(int j=1; j<=7; j++){
                             n = (int) Math.pow(10,j);
                             h = (b - a) / n;
                             sum = 0.5 * (calculateValue(mathFunction,a) + calculateValue(mathFunction,b));
@@ -106,7 +105,7 @@ public class IterativeIntegrationServer {
                             trapeze[j-1] = result;
                         }
 
-                        for(int j=1; j<=5; j++){
+                        for(int j=1; j<=7; j++){
                             n = (int) Math.pow(10,j);
                             h = (b - a) / n;
                             sum = calculateValue(mathFunction,a) + calculateValue(mathFunction, b);
@@ -159,7 +158,6 @@ public class IterativeIntegrationServer {
                 .build()
                 .setVariable("x", x);
 
-        double result = expression.evaluate();
-        return result;
+        return expression.evaluate();
     }
 }
